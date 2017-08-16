@@ -27,10 +27,10 @@ class VendAPI
 {
     private $url;
 
-    private $last_result_raw;
-    private $last_result;
+    protected $last_result_raw;
+    protected $last_result;
 
-    private $requestr;
+    protected $requestr;
 
     private $debug = false;
     /**
@@ -192,6 +192,14 @@ class VendAPI
         return $result;
     }
     /**
+     * Return a list of webhooks used by this application
+     * @return array
+     * @todo This function
+     */
+    public function getWebhooks(){
+
+    }
+    /**
      * request a specific path from vend
      *
      * @param string $path the absolute path of the requested item (ie /api/products )
@@ -294,6 +302,15 @@ class VendAPI
         return new VendSale($result->register_sale, $this);
     }
     /**
+     * Save webhook object to Vend
+     * @return object
+     */
+    public function saveWebhook($webhook){
+        $result = $this->_request('/api/webhook', $webhook->toArray());
+
+        return new VendWebhook($result, $this);
+    }
+    /**
      * make request to the vend api
      *
      * @param string  $path   the url to request
@@ -359,10 +376,8 @@ class VendAPI
             throw new Exception($result->error .' : '. $result->details);
         }
 
-        if ($this->debug) {
-            $this->last_result_raw = $rawresult;
-            $this->last_result = $result;
-        }
+        $this->last_result_raw = $rawresult;
+        $this->last_result = $result;
 
         return $result;
     }

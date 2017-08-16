@@ -99,6 +99,28 @@ class VendRequest
         $this->posted = '';
         return $this->_request($path, 'get');
     }
+    public function put($path, $rawdata){
+        $this->setOpt(
+            array(
+                CURLOPT_POST => 1,
+                CURLOPT_POSTFIELDS => $rawdata,
+                CURLOPT_CUSTOMREQUEST => 'PUT'
+            )
+        );
+        $this->posted = $rawdata;
+        return $this->_request($path, 'put');
+    }
+    public function delete($path, $rawdata){
+        $this->setOpt(
+            array(
+                CURLOPT_POST => 1,
+                CURLOPT_POSTFIELDS => $rawdata,
+                CURLOPT_CUSTOMREQUEST => 'DELETE'
+            )
+        );
+        $this->posted = $rawdata;
+        return $this->_request($path, 'delete');
+    }
     private function _request($path, $type)
     {
         $this->setOpt(CURLOPT_URL, $this->url.$path);
