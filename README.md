@@ -6,9 +6,6 @@ is at a really basic state but it does exactly what I need at the
 moment. Feel free to add any issues/bugs and send me any pull
 requests.
 
-NB: Updated to use oauth for July 2015 deprecation, if you have sample code for handling oauth authorization and token refreshes submit a pull requst
-
-
 ## Installation and Basic Usage
 
 ### With Composer
@@ -17,8 +14,14 @@ The easiest way to install Vend API is via [composer](http://getcomposer.org/). 
 
 ```json
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ry167/vendapi"
+        }
+    ],
     "require": {
-        "vendapi/vendapi": "dev-master"
+        "vendapi/vendapi": "^1.5"
     }
 }
 ```
@@ -26,22 +29,24 @@ The easiest way to install Vend API is via [composer](http://getcomposer.org/). 
 ### Without Composer
 
 
-Why are you not using [composer](http://getcomposer.org/)? Download and extract the [zip file](https://github.com/brucealdridge/VendAPI/archive/master.zip) from the repo into your project path somewhere.
+Why are you not using [composer](http://getcomposer.org/)? Download and extract the [zip file](https://github.com/ry167/VendAPI/archive/master.zip) from the repo into your project path somewhere.
 
 ```php
 <?php
 require 'path/to/src/VendApi/VendApi.php';
-
-$vend = new VendAPI\VendAPI('https://shopname.vendhq.com','VEND_TOKEN_TYPE','VEND_ACCESS_TOKEN');
-$products = $vend->getProducts();
 ```
 
 ## API Usage
 
-### Get Products
+### Initiation
 
 ```php
 $vend = new VendAPI\VendAPI('https://shopname.vendhq.com','VEND_TOKEN_TYPE','VEND_ACCESS_TOKEN');
+```
+
+### Get Products
+
+```php
 $products = $vend->getProducts();
 ```
 
@@ -65,20 +70,25 @@ echo 'Donut product id is '.$donut->id;
 
 ### Add a Sale
 
+[Vend API Sales 101](https://docs.vendhq.com/docs/sales-101)
 ```php
 $sale = new \VendAPI\VendSale(null, $vend);
 $sale->register_id = $register_id;
-$sale->customer_id = $customer_id;
+$sale->user_id = $user_id;
 $sale->status = 'OPEN';
+
 $products = array();
 foreach ($items as $item) {
     $products[] = array(
         'product_id' => $item->product_id,
         'quantity' => $item->quantity,
-        'price' => $item->price
+        'price' => $item->price,
+        'tax' => $item->tax,
+        'tax_id' => $item->tax_id
     );
 }
 $sale->register_sale_products = $products;
+
 $sale->save();
 
 echo "Created new order with id: ".$sale->id;

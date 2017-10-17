@@ -90,6 +90,12 @@ class VendAPI
 
         return $this->apiGetCustomers($path);
     }
+
+    public function searchCustomers($options){
+        $query = http_build_query($options);
+        return $this->apiGetCustomers('?' . $query);
+    }
+
     /**
      * Get all products
      *
@@ -192,14 +198,6 @@ class VendAPI
         return $result;
     }
     /**
-     * Return a list of webhooks used by this application
-     * @return array
-     * @todo This function
-     */
-    public function getWebhooks(){
-
-    }
-    /**
      * request a specific path from vend
      *
      * @param string $path the absolute path of the requested item (ie /api/products )
@@ -300,15 +298,6 @@ class VendAPI
         $result = $this->_request('/api/register_sales', $sale->toArray());
 
         return new VendSale($result->register_sale, $this);
-    }
-    /**
-     * Save webhook object to Vend
-     * @return object
-     */
-    public function saveWebhook($webhook){
-        $result = $this->_request('/api/webhook', $webhook->toArray());
-
-        return new VendWebhook($result, $this);
     }
     /**
      * make request to the vend api
